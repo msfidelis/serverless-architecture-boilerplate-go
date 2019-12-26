@@ -1,0 +1,43 @@
+service: serverless-go
+
+frameworkVersion: '>=1.28.0 <2.0.0'
+
+provider:
+  name: aws
+  runtime: go1.x
+  stage: dev
+  region: us-east-1
+
+package:
+  exclude:
+    - ./**
+  include:
+    - ./bin/**
+
+functions:
+  create:
+    handler: bin/books/endpoints/create
+    events:
+      - http:
+          path: books
+          method: post
+  read:
+    handler: bin/books/endpoints/read
+    events:
+      - http:
+          path: books
+          method: get
+
+  update:
+    handler: bin/books/endpoints/update
+    events:
+      - http:
+          path: books
+          method: put
+
+  delete:
+    handler: bin/books/endpoints/delete
+    events:
+      - http:
+          path: books
+          method: delete
