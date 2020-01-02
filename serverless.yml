@@ -14,6 +14,12 @@ package:
   include:
     - ./bin/**
 
+custom:
+  region: ${self:provider.region}
+  stage:  ${opt:stage, self:provider.stage}
+  prefix: ${self:custom.stage}-${self:service}
+  dynamo-books-name: ${self:custom.prefix}-books-catalog
+
 functions:
   create:
     handler: bin/books/endpoints/create
@@ -41,3 +47,22 @@ functions:
       - http:
           path: books
           method: delete
+
+
+# CloudFormation template syntax
+resources:
+  Resources:
+    #DynamoDB Books Table
+    BooksCatalog:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.dynamo-books-name}
+        AttributeDefinitions:
+          - AttributeName: hashkey
+            AttributeType: S
+        KeySchema:
+          - AttributeName: hashkey
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 1
