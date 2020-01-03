@@ -62,7 +62,7 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	client.Save(book)
 
 	body, err := json.Marshal(map[string]interface{}{
-		"message": book,
+		"book": book,
 	})
 
 	if err != nil {
