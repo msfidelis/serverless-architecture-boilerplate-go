@@ -1,0 +1,42 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/google/uuid"
+)
+
+func main() {
+
+	id, _ := uuid.NewUUID()
+
+	type Book struct {
+		Hashkey      string      `json:"hashkey"`
+		Author       string      `json:"author"`
+		Price        string      `json:"price"`
+		Updated      int         `json:"updated_by_worker"`
+		Created      string      `json:"created_at"`
+		CustomStruct interface{} `json:",omitempty"`
+	}
+
+	book := Book{
+		Hashkey: id.String(),
+		Author:  "Neil Gaiman",
+		Price:   "20.00",
+		Updated: 0,
+		Created: "ble",
+	}
+
+	hahaha, _ := json.Marshal(book)
+	fmt.Println(string(id.String()))
+	fmt.Println(string(hahaha))
+
+	// client1 := dynamodb.New("dev-serverless-go-books-catalog")
+	// fmt.Println(id)
+
+	// client2 := dynamodb.New("fodase")
+	// fmt.Println(client2.Save())
+	// fmt.Println(client1.Save())
+
+}
