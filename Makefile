@@ -1,7 +1,7 @@
 .PHONY: build clean deploy
 
 build:
-	dep ensure -v
+	GO111MODULE=on go get
 	env GOOS=linux go build -ldflags="-s -w" -o bin/books/endpoints/create modules/books/endpoints/create.go
 	env GOOS=linux go build -ldflags="-s -w" -o bin/books/endpoints/read modules/books/endpoints/read.go
 	env GOOS=linux go build -ldflags="-s -w" -o bin/books/endpoints/update modules/books/endpoints/update.go
