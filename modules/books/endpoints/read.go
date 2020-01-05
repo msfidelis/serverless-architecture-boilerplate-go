@@ -42,9 +42,8 @@ func Handler(ctx context.Context) (Response, error) {
 		return Response{StatusCode: 500}, errUnmarsh
 	}
 
-	body, err := json.Marshal(map[string]interface{}{
-		"books": books,
-	})
+	body, err := json.Marshal(books)
+
 	if err != nil {
 		return Response{StatusCode: 500}, err
 	}

@@ -10,9 +10,8 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/google/uuid"
 
+	"serverless-architecture-boilerplate-go/pkg/book"
 	"serverless-architecture-boilerplate-go/pkg/dynamodb"
-
-	"log"
 )
 
 type Response events.APIGatewayProxyResponse
@@ -21,21 +20,9 @@ type Response events.APIGatewayProxyResponse
 func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Response, error) {
 	var buf bytes.Buffer
 
-	log.Print("Request body: ", request.Body)
-
-	type Book struct {
-		Hashkey      string      `json:"hashkey"`
-		Title        string      `json:"title"`
-		Author       string      `json:"author"`
-		Price        float64     `json:"price"`
-		Updated      bool        `json:"updated"`
-		Created      string      `json:"created"`
-		CustomStruct interface{} `json:",omitempty"`
-	}
-
 	id, _ := uuid.NewUUID()
 
-	book := &Book{
+	book := &book.Book{
 		Hashkey: id.String(),
 		Created: time.Now().String(),
 		Updated: false,
@@ -43,27 +30,11 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 
 	json.Unmarshal([]byte(request.Body), book)
 
-	// if errParseBody != nil {
-	// http.Error(w, errParseBody.Error(), http.StatusBadRequest)
-	// return
-	// }
-
-	// id, _ := uuid.NewUUID()
-
-	// book := &Book{
-	// 	Hashkey: id.String(),
-	// 	Author:  "Neil Gaiman",
-	// 	Price:   "20.00",
-	// 	Updated: 0,
-	// }
-
 	client := dynamodb.New("dev-serverless-go-books-catalog")
 
 	client.Save(book)
 
-	body, err := json.Marshal(map[string]interface{}{
-		"book": book,
-	})
+	body, err := json.Marshal(book)
 
 	if err != nil {
 		return Response{StatusCode: 404}, err
