@@ -33,14 +33,18 @@ functions:
       - http:
           path: books
           method: get
-
+  read_detail:
+    handler: bin/books/endpoints/detail
+    events:
+      - http:
+          path: books/{hashkey}
+          method: get
   update:
     handler: bin/books/endpoints/update
     events:
       - http:
           path: books
           method: put
-
   delete:
     handler: bin/books/endpoints/delete
     events:

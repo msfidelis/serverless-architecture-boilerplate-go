@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"serverless-architecture-boilerplate-go/pkg/book"
 	"serverless-architecture-boilerplate-go/pkg/dynamodb"
@@ -18,18 +17,23 @@ import (
 
 type Response events.APIGatewayProxyResponse
 
-func Handler(ctx context.Context) (Response, error) {
+func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Response, error) {
 	var buf bytes.Buffer
+
+	hashkey := request.PathParameters["hashkey"]
+
+	fmt.Println(hashkey)
 
 	client := dynamodb.New("dev-serverless-go-books-catalog")
 
-	proj := expression.NamesList(expression.Name("hashkey"), expression.Name("title"), expression.Name("author"), expression.Name("price"))
-	expr, errBuilder := expression.NewBuilder().WithProjection(proj).Build()
+	proj := expression.NamesList(expression.Name("hashkey"), expression.Name("title"), expression.Name("author"), expression.Name("price"), expression.Name("updated"), expression.Name("created"))
+	filt := expression.Name("hashkey").Equal(expression.Value(hashkey))
+
+	expr, errBuilder := expression.NewBuilder().WithFilter(filt).WithProjection(proj).Build()
 
 	if errBuilder != nil {
 		fmt.Println("Got error building expression:")
-		fmt.Println(errBuilder.Error())
-		os.Exit(1)
+		return Response{StatusCode: 500}, errBuilder
 	}
 
 	var books []book.Book

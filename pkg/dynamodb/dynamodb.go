@@ -3,13 +3,14 @@ package dynamodb
 import (
 	"encoding/json"
 
+	"fmt"
+	"os"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-
-	"fmt"
-	"os"
+	"github.com/aws/aws-sdk-go/service/dynamodb/expression"
 )
 
 type DynamoDbClient struct {
@@ -67,8 +68,31 @@ func (d DynamoDbClient) Query() string {
 	return "query"
 }
 
-func (d DynamoDbClient) Scan() string {
-	return "scan"
+func (d DynamoDbClient) Scan(expr expression.Expression) *dynamodb.ScanOutput {
+
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	}))
+
+	svc := dynamodb.New(sess)
+
+	params := &dynamodb.ScanInput{
+		ExpressionAttributeNames:  expr.Names(),
+		ExpressionAttributeValues: expr.Values(),
+		FilterExpression:          expr.Filter(),
+		ProjectionExpression:      expr.Projection(),
+		TableName:                 aws.String(d.tableName),
+	}
+
+	result, err := svc.Scan(params)
+
+	if err != nil {
+		fmt.Println("Query API call failed:")
+		fmt.Println((err.Error()))
+		os.Exit(1)
+	}
+
+	return result
 }
 
 func (d DynamoDbClient) Update() string {
