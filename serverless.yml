@@ -5,14 +5,19 @@ frameworkVersion: '>=1.28.0 <2.0.0'
 provider:
   name: aws
   runtime: go1.x
-  stage: dev
-  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  timeout: 10
+  memorySize: 512
+  versionFunctions: false
 
-package:
-  exclude:
-    - ./**
-  include:
-    - ./bin/**
+  package:
+    exclude:
+      - ./**
+    include:
+      - ./bin/**
+
+  environment:
+    ${file(./configs/${self:provider.stage}.yml)}
 
 custom:
   region: ${self:provider.region}
@@ -27,24 +32,28 @@ functions:
       - http:
           path: books
           method: post
+
   read:
     handler: bin/books/endpoints/read
     events:
       - http:
           path: books
           method: get
+
   read_detail:
     handler: bin/books/endpoints/detail
     events:
       - http:
           path: books/{hashkey}
           method: get
+
   update:
     handler: bin/books/endpoints/update
     events:
       - http:
           path: books
           method: put
+
   delete:
     handler: bin/books/endpoints/delete
     events:

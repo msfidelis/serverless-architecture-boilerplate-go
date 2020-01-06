@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"os"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -20,6 +21,9 @@ type Response events.APIGatewayProxyResponse
 func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Response, error) {
 	var buf bytes.Buffer
 
+	dynamoTable := os.Getenv("DYNAMO_TABLE_BOOKS")
+	client := dynamodb.New(dynamoTable)
+
 	id, _ := uuid.NewUUID()
 
 	book := &book.Book{
@@ -29,8 +33,6 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	}
 
 	json.Unmarshal([]byte(request.Body), book)
-
-	client := dynamodb.New("dev-serverless-go-books-catalog")
 
 	client.Save(book)
 
@@ -47,8 +49,7 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 		IsBase64Encoded: false,
 		Body:            buf.String(),
 		Headers: map[string]string{
-			"Content-Type":           "application/json",
-			"X-MyCompany-Func-Reply": "hello-handler",
+			"Content-Type": "application/json",
 		},
 	}
 

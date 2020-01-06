@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"serverless-architecture-boilerplate-go/pkg/book"
 	"serverless-architecture-boilerplate-go/pkg/dynamodb"
@@ -23,7 +24,11 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 
 	hashkey := request.PathParameters["hashkey"]
 
-	client := dynamodb.New("dev-serverless-go-books-catalog")
+	fmt.Println("DYNAMO_TABLE_BOOKS:", os.Getenv("DYNAMO_TABLE_BOOKS"))
+
+	dynamoTable := os.Getenv("DYNAMO_TABLE_BOOKS")
+	client := dynamodb.New(dynamoTable)
+
 	proj := expression.NamesList(expression.Name("hashkey"), expression.Name("title"), expression.Name("author"), expression.Name("price"), expression.Name("updated"), expression.Name("created"))
 	filt := expression.Name("hashkey").Equal(expression.Value(hashkey))
 
@@ -55,8 +60,7 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 		IsBase64Encoded: false,
 		Body:            string(body),
 		Headers: map[string]string{
-			"Content-Type":           "application/json",
-			"X-MyCompany-Func-Reply": "hello-handler",
+			"Content-Type": "application/json",
 		},
 	}
 

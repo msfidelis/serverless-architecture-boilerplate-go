@@ -1,0 +1,3 @@
+ENV: prod
+REGION: ${self:custom.region}
+DYNAMO_TABLE_BOOKS: ${self:custom.dynamo-books-name}

@@ -13,4 +13,4 @@ clean:
 test:
 	go test
 deploy: clean build
-	serverless deploy --verbose
+	serverless deploy --verbose --force

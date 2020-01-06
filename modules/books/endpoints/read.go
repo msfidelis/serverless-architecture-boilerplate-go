@@ -21,7 +21,8 @@ type Response events.APIGatewayProxyResponse
 func Handler(ctx context.Context) (Response, error) {
 	var buf bytes.Buffer
 
-	client := dynamodb.New("dev-serverless-go-books-catalog")
+	dynamoTable := os.Getenv("DYNAMO_TABLE_BOOKS")
+	client := dynamodb.New(dynamoTable)
 
 	proj := expression.NamesList(expression.Name("hashkey"), expression.Name("title"), expression.Name("author"), expression.Name("price"))
 	expr, errBuilder := expression.NewBuilder().WithProjection(proj).Build()
@@ -54,8 +55,7 @@ func Handler(ctx context.Context) (Response, error) {
 		IsBase64Encoded: false,
 		Body:            buf.String(),
 		Headers: map[string]string{
-			"Content-Type":           "application/json",
-			"X-MyCompany-Func-Reply": "hello-handler",
+			"Content-Type": "application/json",
 		},
 	}
 
