@@ -51,14 +51,14 @@ functions:
     handler: bin/books/endpoints/update
     events:
       - http:
-          path: books
+          path: books/hashkey
           method: put
 
   delete:
     handler: bin/books/endpoints/delete
     events:
       - http:
-          path: books
+          path: books/{hashkey}
           method: delete
 
 
