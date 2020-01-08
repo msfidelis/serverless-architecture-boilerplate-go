@@ -23,15 +23,12 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	var books []book.Book
 
 	hashkey := request.PathParameters["hashkey"]
-
-	fmt.Println("DYNAMO_TABLE_BOOKS:", os.Getenv("DYNAMO_TABLE_BOOKS"))
-
 	dynamoTable := os.Getenv("DYNAMO_TABLE_BOOKS")
+
 	client := dynamodb.New(dynamoTable)
 
 	proj := expression.NamesList(expression.Name("hashkey"), expression.Name("title"), expression.Name("author"), expression.Name("price"), expression.Name("updated"), expression.Name("created"))
 	filt := expression.Name("hashkey").Equal(expression.Value(hashkey))
-
 	expr, errBuilder := expression.NewBuilder().WithFilter(filt).WithProjection(proj).Build()
 
 	if errBuilder != nil {
@@ -40,6 +37,28 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	}
 
 	result := client.Scan(expr)
+
+	if len(result.Items) <= 0 {
+
+		body, err := json.Marshal(map[string]interface{}{
+			"hashkey": hashkey,
+			"message": "not found",
+		})
+
+		if err != nil {
+			return Response{StatusCode: 500}, err
+		}
+
+		return Response{
+			StatusCode:      404,
+			IsBase64Encoded: false,
+			Body:            string(body),
+			Headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+		}, nil
+
+	}
 
 	errUnmarsh := dynamodbattribute.UnmarshalListOfMaps(result.Items, &books)
 
