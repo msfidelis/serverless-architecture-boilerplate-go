@@ -4,39 +4,93 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
+	"os"
+	"serverless-architecture-boilerplate-go/pkg/book"
+	"serverless-architecture-boilerplate-go/pkg/dynamoclient"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/aws/aws-sdk-go/service/dynamodb/expression"
 )
 
-// Response is of type APIGatewayProxyResponse since we're leveraging the
-// AWS Lambda Proxy Request functionality (default behavior)
-//
-// https://serverless.com/framework/docs/providers/aws/events/apigateway/#lambda-proxy-integration
 type Response events.APIGatewayProxyResponse
 
-// Handler is our lambda handler invoked by the `lambda.Start` function call
-func Handler(ctx context.Context) (Response, error) {
+func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Response, error) {
 	var buf bytes.Buffer
+	// var body []byte
+	// var statusCode int
+	var books []book.Book
 
-	body, err := json.Marshal(map[string]interface{}{
-		"message": "Updated",
-	})
-	if err != nil {
-		return Response{StatusCode: 404}, err
+	hashkey := request.PathParameters["hashkey"]
+	dynamoTable := os.Getenv("DYNAMO_TABLE_BOOKS")
+	client := dynamoclient.New(dynamoTable)
+
+	proj := expression.NamesList(expression.Name("hashkey"), expression.Name("title"), expression.Name("author"), expression.Name("price"), expression.Name("updated"), expression.Name("created"))
+	filt := expression.Name("hashkey").Equal(expression.Value(hashkey))
+
+	expr, errBuilder := expression.NewBuilder().WithFilter(filt).WithProjection(proj).Build()
+
+	if errBuilder != nil {
+		fmt.Println("Got error building expression:")
+		return Response{StatusCode: 500}, errBuilder
 	}
-	json.HTMLEscape(&buf, body)
 
-	resp := Response{
-		StatusCode:      200,
-		IsBase64Encoded: false,
-		Body:            buf.String(),
-		Headers: map[string]string{
-			"Content-Type": "application/json",
-		},
+	result := client.Scan(expr)
+
+	if len(result.Items) >= 0 {
+
+		body, err := json.Marshal(map[string]interface{}{
+			"hashkey": hashkey,
+			"message": "not found",
+		})
+
+		if err != nil {
+			return Response{StatusCode: 500}, err
+		}
+
+		json.HTMLEscape(&buf, body)
+
+		resp := Response{
+			StatusCode:      404,
+			IsBase64Encoded: false,
+			Body:            string(body),
+			Headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+		}
+
+		return resp, nil
+
+	} else {
+
+		errUnmarsh := dynamodbattribute.UnmarshalListOfMaps(result.Items, &books)
+
+		if errUnmarsh != nil {
+			return Response{StatusCode: 500}, errUnmarsh
+		}
+
+		body, err := json.Marshal(books[0])
+
+		if err != nil {
+			return Response{StatusCode: 500}, err
+		}
+
+		json.HTMLEscape(&buf, body)
+
+		resp := Response{
+			StatusCode:      200,
+			IsBase64Encoded: false,
+			Body:            string(body),
+			Headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+		}
+
+		return resp, nil
 	}
 
-	return resp, nil
 }
 
 func main() {
