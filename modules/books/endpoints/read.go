@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"serverless-architecture-boilerplate-go/pkg/book"
-	"serverless-architecture-boilerplate-go/pkg/dynamodb"
+	"serverless-architecture-boilerplate-go/pkg/dynamoclient"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -22,7 +22,7 @@ func Handler(ctx context.Context) (Response, error) {
 	var buf bytes.Buffer
 
 	dynamoTable := os.Getenv("DYNAMO_TABLE_BOOKS")
-	client := dynamodb.New(dynamoTable)
+	client := dynamoclient.New(dynamoTable)
 
 	proj := expression.NamesList(expression.Name("hashkey"), expression.Name("title"), expression.Name("author"), expression.Name("price"))
 	expr, errBuilder := expression.NewBuilder().WithProjection(proj).Build()

@@ -1,8 +1,6 @@
-package dynamodb
+package dynamoclient
 
 import (
-	"encoding/json"
-
 	"fmt"
 	"os"
 
@@ -25,12 +23,7 @@ func New(tableName string) *DynamoDbClient {
 
 func (d *DynamoDbClient) Save(item interface{}) *dynamodb.PutItemOutput {
 
-	hahaha, _ := json.Marshal(item)
-	fmt.Println(string(hahaha))
-
 	av, errMarsh := dynamodbattribute.MarshalMap(item)
-
-	fmt.Println(av)
 
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
@@ -58,14 +51,6 @@ func (d *DynamoDbClient) Save(item interface{}) *dynamodb.PutItemOutput {
 	}
 
 	return response
-}
-
-func (d DynamoDbClient) Find() string {
-	return "find"
-}
-
-func (d DynamoDbClient) Query() string {
-	return "query"
 }
 
 func (d DynamoDbClient) Scan(expr expression.Expression) *dynamodb.ScanOutput {
@@ -103,6 +88,27 @@ func (d DynamoDbClient) UpdateItem() string {
 	return "updated"
 }
 
-func (d DynamoDbClient) RemoveItem() string {
-	return "removed"
+func (d DynamoDbClient) RemoveItem(keyMap map[string]*dynamodb.AttributeValue) bool {
+
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	}))
+
+	svc := dynamodb.New(sess)
+
+	input := &dynamodb.DeleteItemInput{
+		Key:       keyMap,
+		TableName: aws.String(d.tableName),
+	}
+
+	_, errDelete := svc.DeleteItem(input)
+
+	if errDelete != nil {
+		fmt.Println("Got error calling DeleteItem")
+		fmt.Println((errDelete.Error()))
+		return false
+	} else {
+		return true
+	}
+
 }

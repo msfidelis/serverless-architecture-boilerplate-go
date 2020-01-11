@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 
 	"serverless-architecture-boilerplate-go/pkg/book"
-	"serverless-architecture-boilerplate-go/pkg/dynamodb"
+	"serverless-architecture-boilerplate-go/pkg/dynamoclient"
 )
 
 type Response events.APIGatewayProxyResponse
@@ -22,7 +22,7 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	var buf bytes.Buffer
 
 	dynamoTable := os.Getenv("DYNAMO_TABLE_BOOKS")
-	client := dynamodb.New(dynamoTable)
+	client := dynamoclient.New(dynamoTable)
 
 	id, _ := uuid.NewUUID()
 
