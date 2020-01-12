@@ -1,0 +1,52 @@
+![Logo](https://cdn-images-1.medium.com/max/1600/1*OezhU9lHTNCk6O6FCUL5fQ.png)
+
+<h1 align="center">Serverless Architecture Boilerplate (GoLang) 👋</h1>
+<p>
+  <img src="https://img.shields.io/badge/version-v0-blue.svg?cacheSeconds=2592000" />
+  <a href="https://github.com/msfidelis/serverless-architecture-boilerplate-go">
+    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" target="_blank" />
+  </a>
+  <a href="https://twitter.com/fidelissauro">
+    <img alt="Twitter: fidelissauro" src="https://img.shields.io/twitter/follow/fidelissauro.svg?style=social" target="_blank" />
+  </a>
+</p>
+
+> Boilerplate to organize and deploy big projects using AWS API Gateway and AWS Lambda with Serverless Framework
+
+### 🏠 [Homepage](https://github.com/msfidelis/serverless-architecture-boilerplate-go)
+
+## Install
+
+```sh
+make build
+```
+
+## Usage
+
+```sh
+make deploy
+```
+
+## Run tests
+
+```sh
+make test
+```
+
+## Author
+
+👤 **Matheus Fidelis**
+
+* Twitter: [@fidelissauro](https://twitter.com/fidelissauro)
+* Github: [@msfidelis](https://github.com/msfidelis)
+
+## 🤝 Contributing
+
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/msfidelis/serverless-architecture-boilerplate-go/issues).
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+***
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
