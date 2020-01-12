@@ -33,8 +33,6 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	}
 
 	removed := client.RemoveItem(key)
-	fmt.Println("Removed:")
-	fmt.Println(removed)
 
 	if removed == true {
 		fmt.Println("True:")
@@ -57,8 +55,6 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 			body = payload
 		}
 	}
-
-	fmt.Println(body)
 
 	json.HTMLEscape(&buf, body)
 

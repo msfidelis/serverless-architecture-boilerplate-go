@@ -84,8 +84,32 @@ func (d DynamoDbClient) Update() string {
 	return "updated"
 }
 
-func (d DynamoDbClient) UpdateItem() string {
-	return "updated"
+func (d DynamoDbClient) UpdateItem(keyMap map[string]*dynamodb.AttributeValue, expr expression.Expression) *dynamodb.UpdateItemOutput {
+
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	}))
+
+	svc := dynamodb.New(sess)
+
+	input := &dynamodb.UpdateItemInput{
+		ExpressionAttributeNames:  expr.Names(),
+		ExpressionAttributeValues: expr.Values(),
+		Key:                       keyMap,
+		ReturnValues:              aws.String("ALL_NEW"),
+		TableName:                 aws.String(d.tableName),
+		UpdateExpression:          expr.Update(),
+	}
+
+	result, err := svc.UpdateItem(input)
+
+	if err != nil {
+		fmt.Println("Updated API call failed:")
+		fmt.Println((err.Error()))
+		os.Exit(1)
+	}
+
+	return result
 }
 
 func (d DynamoDbClient) RemoveItem(keyMap map[string]*dynamodb.AttributeValue) bool {
