@@ -29,7 +29,7 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	book := &book.Book{
 		Hashkey: id.String(),
 		Created: time.Now().String(),
-		Updated: false,
+		Updated: time.Now().String(),
 	}
 
 	json.Unmarshal([]byte(request.Body), book)

@@ -86,6 +86,9 @@ func (d DynamoDbClient) Update() string {
 
 func (d DynamoDbClient) UpdateItem(keyMap map[string]*dynamodb.AttributeValue, expr expression.Expression) *dynamodb.UpdateItemOutput {
 
+	fmt.Println(keyMap)
+	fmt.Println(expr)
+
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
@@ -96,7 +99,7 @@ func (d DynamoDbClient) UpdateItem(keyMap map[string]*dynamodb.AttributeValue, e
 		ExpressionAttributeNames:  expr.Names(),
 		ExpressionAttributeValues: expr.Values(),
 		Key:                       keyMap,
-		ReturnValues:              aws.String("ALL_NEW"),
+		ReturnValues:              aws.String("UPDATED_NEW"),
 		TableName:                 aws.String(d.tableName),
 		UpdateExpression:          expr.Update(),
 	}

@@ -8,6 +8,7 @@ import (
 	"os"
 	"serverless-architecture-boilerplate-go/pkg/book"
 	"serverless-architecture-boilerplate-go/pkg/dynamoclient"
+	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -74,8 +75,6 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 			return Response{StatusCode: 500}, errUnmarsh
 		}
 
-		bookUpdated := books[0]
-
 		payloadBook := &book.Book{
 			Hashkey: hashkey,
 		}
@@ -84,46 +83,45 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 
 		// Update by identifier
 		key := map[string]*dynamodb.AttributeValue{
-			"Hashkey": {
+			"hashkey": {
 				S: aws.String(hashkey),
 			},
 		}
 
 		// Init update
 		update := expression.Set(
-			expression.Name("Hashkey"),
-			expression.Value(hashkey),
+			expression.Name("updated"),
+			expression.Value(time.Now().String()),
 		)
 
 		// Values Update
 		if payloadBook.Author != "" {
 			update.Set(
-				expression.Name("Author"),
+				expression.Name("author"),
 				expression.Value(payloadBook.Author),
 			)
 		}
 
 		if payloadBook.Title != "" {
 			update.Set(
-				expression.Name("Title"),
+				expression.Name("title"),
 				expression.Value(payloadBook.Title),
 			)
 		}
 
 		if payloadBook.Price != 0 {
 			update.Set(
-				expression.Name("Price"),
+				expression.Name("price"),
 				expression.Value(payloadBook.Price),
 			)
 		}
 
-		expr, err := expression.NewBuilder().
-			WithUpdate(update).
-			Build()
-
+		expr, err := expression.NewBuilder().WithUpdate(update).Build()
 		result := client.UpdateItem(key, expr)
 
-		println(result)
+		// Map book updated values to new struct
+		bookUpdated := book.Book{}
+		dynamodbattribute.UnmarshalMap(result.Attributes, &bookUpdated)
 
 		body, err := json.Marshal(bookUpdated)
 		if err != nil {
