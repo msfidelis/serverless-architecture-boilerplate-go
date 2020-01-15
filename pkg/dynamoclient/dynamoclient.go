@@ -80,10 +80,6 @@ func (d DynamoDbClient) Scan(expr expression.Expression) *dynamodb.ScanOutput {
 	return result
 }
 
-func (d DynamoDbClient) Update() string {
-	return "updated"
-}
-
 func (d DynamoDbClient) UpdateItem(keyMap map[string]*dynamodb.AttributeValue, expr expression.Expression) *dynamodb.UpdateItemOutput {
 
 	fmt.Println(keyMap)

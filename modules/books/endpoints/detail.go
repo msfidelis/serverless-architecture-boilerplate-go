@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"os"
 
-	"serverless-architecture-boilerplate-go/pkg/book"
 	"serverless-architecture-boilerplate-go/pkg/dynamoclient"
+	"serverless-architecture-boilerplate-go/pkg/models/book"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -23,28 +23,43 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	var buf bytes.Buffer
 	var books []book.Book
 
-	hashkey := request.PathParameters["hashkey"]
 	dynamoTable := os.Getenv("DYNAMO_TABLE_BOOKS")
-
 	client := dynamoclient.New(dynamoTable)
 
-	proj := expression.NamesList(expression.Name("hashkey"), expression.Name("title"), expression.Name("author"), expression.Name("price"), expression.Name("updated"), expression.Name("created"))
+	hashkey := request.PathParameters["hashkey"]
+
+	// Values to return from table
+	proj := expression.NamesList(
+		expression.Name("hashkey"),
+		expression.Name("title"),
+		expression.Name("author"),
+		expression.Name("price"),
+		expression.Name("updated"),
+		expression.Name("created"),
+	)
+
+	// Filter to return
 	filt := expression.Name("hashkey").Equal(expression.Value(hashkey))
 
-	expr, errBuilder := expression.NewBuilder().WithFilter(filt).WithProjection(proj).Build()
+	// Initialize Query Builder
+	expr, errBuilder := expression.NewBuilder().
+		WithFilter(filt).
+		WithProjection(proj).
+		Build()
 
 	if errBuilder != nil {
 		fmt.Println("Got error building expression:")
 		return Response{StatusCode: 500}, errBuilder
 	}
 
+	// Scan dynamoDB table
 	result := client.Scan(expr)
 
 	if len(result.Items) <= 0 {
 
 		body, err := json.Marshal(map[string]interface{}{
 			"hashkey": hashkey,
-			"message": "not found",
+			"message": "Book not found",
 		})
 
 		if err != nil {

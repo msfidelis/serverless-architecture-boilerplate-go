@@ -11,13 +11,12 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/google/uuid"
 
-	"serverless-architecture-boilerplate-go/pkg/book"
 	"serverless-architecture-boilerplate-go/pkg/dynamoclient"
+	"serverless-architecture-boilerplate-go/pkg/models/book"
 )
 
 type Response events.APIGatewayProxyResponse
 
-// Handler is our lambda handler invoked by the `lambda.Start` function call
 func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Response, error) {
 	var buf bytes.Buffer
 

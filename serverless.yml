@@ -10,9 +10,39 @@ provider:
   memorySize: 512
   versionFunctions: false
 
+  tags:
+    GLOBAL-TAG1: foo
+    GLOBAL-TAG2: bar
+
+  # Permissions for all of your functions can be set here
+  iamRoleStatements:
+
+  # Gives permission to DynamoDB tables in a specific region
+  - Effect: Allow
+    Action:
+      - dynamodb:DescribeTable
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+    Resource: "arn:aws:dynamodb:*:*:*"
+
+  # Gives permission to SQS
+  - Effect: Allow
+    Action:
+      - sqs:DeleteMessage
+      - sqs:ReceiveMessage
+      - sqs:SendMessage
+    Resource: arn:aws:sqs:*:*:*
+
   package:
     exclude:
       - ./**
+      - .git/**
+      - .vscode/**
+      - .test/**
     include:
       - ./bin/**
 
@@ -24,6 +54,7 @@ custom:
   stage:  ${opt:stage, self:provider.stage}
   prefix: ${self:custom.stage}-${self:service}
   dynamo-books-name: ${self:custom.prefix}-books-catalog
+  sqs-books-name: ${self:custom.prefix}-processing-queue
 
 functions:
   create:
@@ -32,6 +63,8 @@ functions:
       - http:
           path: books
           method: post
+    tags:
+      TAGFUNCTION: Tag Value
 
   read:
     handler: bin/books/endpoints/read
@@ -79,3 +112,11 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 2
           WriteCapacityUnits: 1
+
+    # SQS Queue to Update DynamoDB
+    BooksQueueExample:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.sqs-books-name}
+        MessageRetentionPeriod: 1209600
+        VisibilityTimeout: 60

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"os"
 	"serverless-architecture-boilerplate-go/pkg/dynamoclient"
 
@@ -22,10 +21,12 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	var body []byte
 	var statusCode int
 
-	hashkey := request.PathParameters["hashkey"]
 	dynamoTable := os.Getenv("DYNAMO_TABLE_BOOKS")
 	client := dynamoclient.New(dynamoTable)
 
+	hashkey := request.PathParameters["hashkey"]
+
+	// Using *dynamodb.AttributeValue to create keyMap
 	key := map[string]*dynamodb.AttributeValue{
 		"hashkey": {
 			S: aws.String(hashkey),
@@ -35,7 +36,6 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	removed := client.RemoveItem(key)
 
 	if removed == true {
-		fmt.Println("True:")
 		statusCode = 200
 		payload, err := json.Marshal(map[string]interface{}{
 			"hashkey": hashkey,
@@ -45,7 +45,6 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 			body = payload
 		}
 	} else {
-		fmt.Println("False:")
 		statusCode = 404
 		payload, err := json.Marshal(map[string]interface{}{
 			"hashkey": hashkey,
