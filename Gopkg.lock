@@ -16,7 +16,7 @@
   version = "v1.13.3"
 
 [[projects]]
-  digest = "1:79f9e3fca7e0dcc4a41edd6566a7a89bddd9e5363c5567f5428536c93ee508b1"
+  digest = "1:c9384787d3e6c3101f9727b7ecc9d802d698eb3b6c60d075c8a7d49aa75fc50c"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -55,6 +55,7 @@
     "service/dynamodb",
     "service/dynamodb/dynamodbattribute",
     "service/dynamodb/expression",
+    "service/sqs",
     "service/sts",
     "service/sts/stsiface",
   ]
@@ -88,6 +89,7 @@
     "github.com/aws/aws-sdk-go/service/dynamodb",
     "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute",
     "github.com/aws/aws-sdk-go/service/dynamodb/expression",
+    "github.com/aws/aws-sdk-go/service/sqs",
     "github.com/google/uuid",
   ]
   solver-name = "gps-cdcl"
