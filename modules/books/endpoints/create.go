@@ -13,6 +13,7 @@ import (
 
 	"serverless-architecture-boilerplate-go/pkg/dynamoclient"
 	"serverless-architecture-boilerplate-go/pkg/models/book"
+	"serverless-architecture-boilerplate-go/pkg/sqsclient"
 )
 
 type Response events.APIGatewayProxyResponse
@@ -23,17 +24,22 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 	dynamoTable := os.Getenv("DYNAMO_TABLE_BOOKS")
 	client := dynamoclient.New(dynamoTable)
 
+	sqsQueue := os.Getenv("SQS_QUEUE_BOOKS")
+	sqs := sqsclient.New(sqsQueue)
+
 	id, _ := uuid.NewUUID()
 
 	book := &book.Book{
-		Hashkey: id.String(),
-		Created: time.Now().String(),
-		Updated: time.Now().String(),
+		Hashkey:   id.String(),
+		Created:   time.Now().String(),
+		Updated:   time.Now().String(),
+		Processed: false,
 	}
 
 	json.Unmarshal([]byte(request.Body), book)
 
 	client.Save(book)
+	sqs.SendMessage(book)
 
 	body, err := json.Marshal(book)
 

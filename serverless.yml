@@ -32,6 +32,7 @@ provider:
   # Gives permission to SQS
   - Effect: Allow
     Action:
+      - sqs:GetQueueUrl
       - sqs:DeleteMessage
       - sqs:ReceiveMessage
       - sqs:SendMessage
