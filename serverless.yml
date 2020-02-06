@@ -95,6 +95,16 @@ functions:
           path: books/{hashkey}
           method: delete
 
+  worker:
+    handler: bin/books/functions/worker
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - BooksQueueExample
+              - Arn
+          batchSize: 10
+
 
 # CloudFormation template syntax
 resources:
