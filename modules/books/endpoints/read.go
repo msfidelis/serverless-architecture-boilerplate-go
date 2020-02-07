@@ -2,10 +2,10 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 
 	"serverless-architecture-boilerplate-go/pkg/dynamoclient"
 	"serverless-architecture-boilerplate-go/pkg/models/book"
@@ -18,14 +18,27 @@ import (
 
 type Response events.APIGatewayProxyResponse
 
-func Handler(ctx context.Context) (Response, error) {
+func Handler(request events.APIGatewayProxyRequest) (Response, error) {
 	var buf bytes.Buffer
+	var filt expression.ConditionBuilder
 
 	dynamoTable := os.Getenv("DYNAMO_TABLE_BOOKS")
 	client := dynamoclient.New(dynamoTable)
 
-	proj := expression.NamesList(expression.Name("hashkey"), expression.Name("title"), expression.Name("author"), expression.Name("price"))
-	expr, errBuilder := expression.NewBuilder().WithProjection(proj).Build()
+	filterByProcessed := request.QueryStringParameters["processed"]
+	fmt.Println(filterByProcessed)
+
+	if filterByProcessed != "" {
+		b, err := strconv.ParseBool(filterByProcessed)
+		if err != nil {
+			fmt.Println("Got error building expression:")
+			fmt.Println(err.Error())
+		}
+		filt = expression.Name("processed").Equal(expression.Value(b))
+	}
+
+	proj := expression.NamesList(expression.Name("hashkey"), expression.Name("title"), expression.Name("author"), expression.Name("price"), expression.Name("processed"))
+	expr, errBuilder := expression.NewBuilder().WithProjection(proj).WithFilter(filt).Build()
 
 	if errBuilder != nil {
 		fmt.Println("Got error building expression:")

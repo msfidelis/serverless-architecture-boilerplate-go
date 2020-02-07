@@ -7,6 +7,6 @@ type Book struct {
 	Price        float64     `json:"price"`
 	Updated      string      `json:"updated"`
 	Created      string      `json:"created"`
-	Processed    bool        `json:processed`
+	Processed    bool        `json:"processed"`
 	CustomStruct interface{} `json:",omitempty"`
 }
