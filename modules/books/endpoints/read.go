@@ -28,13 +28,15 @@ func Handler(request events.APIGatewayProxyRequest) (Response, error) {
 	filterByProcessed := request.QueryStringParameters["processed"]
 	fmt.Println(filterByProcessed)
 
-	if filterByProcessed != "" {
+	if filterByProcessed == "true" || filterByProcessed == "false" {
 		b, err := strconv.ParseBool(filterByProcessed)
 		if err != nil {
 			fmt.Println("Got error building expression:")
 			fmt.Println(err.Error())
 		}
 		filt = expression.Name("processed").Equal(expression.Value(b))
+	} else {
+		filt = expression.AttributeExists(expression.Name("hashkey"))
 	}
 
 	proj := expression.NamesList(expression.Name("hashkey"), expression.Name("title"), expression.Name("author"), expression.Name("price"), expression.Name("processed"))
