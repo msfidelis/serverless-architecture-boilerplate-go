@@ -25,9 +25,7 @@ func (s *SQSClient) SendMessage(message interface{}) *sqs.SendMessageOutput {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
-
 	svc := sqs.New(sess)
-
 	resultURL, err := svc.GetQueueUrl(&sqs.GetQueueUrlInput{
 		QueueName: aws.String(s.queueName),
 	})
@@ -51,27 +49,40 @@ func (s *SQSClient) SendMessage(message interface{}) *sqs.SendMessageOutput {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
-
 	return result
 }
 
-func ReceiveMessage(message *sqs.SendMessageOutput) bool {
-	// sess := session.Must(session.NewSessionWithOptions(session.Options{
-	// 	SharedConfigState: session.SharedConfigEnable,
-	// }))
-
-	// svc := sqs.New(sess)
-
-	return true
+func (s *SQSClient) ReceiveMessage(MaxNumberOfMessages int64, VisibilityTimeout int64, WaitTimeSeconds int64) *sqs.ReceiveMessageOutput {
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	}))
+	svc := sqs.New(sess)
+	resultURL, err := svc.GetQueueUrl(&sqs.GetQueueUrlInput{
+		QueueName: aws.String(s.queueName),
+	})
+	if err != nil {
+		fmt.Println("Error to get QueueURL:")
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	receive_params := &sqs.ReceiveMessageInput{
+		QueueUrl:            resultURL.QueueUrl,
+		MaxNumberOfMessages: aws.Int64(MaxNumberOfMessages),
+		VisibilityTimeout:   aws.Int64(VisibilityTimeout),
+		WaitTimeSeconds:     aws.Int64(WaitTimeSeconds),
+	}
+	receive_resp, err := svc.ReceiveMessage(receive_params)
+	if err != nil {
+		log.Println(err)
+	}
+	return receive_resp
 }
 
 func (s *SQSClient) DeleteMessage(receiptHandle string) bool {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
-
 	svc := sqs.New(sess)
-
 	resultURL, err := svc.GetQueueUrl(&sqs.GetQueueUrlInput{
 		QueueName: aws.String(s.queueName),
 	})
