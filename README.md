@@ -50,8 +50,8 @@ vim Makefile
 ```Makefile
 build:
 	dep ensure
-// ...
-env GOOS=linux go build -ldflags="-s -w" -o bin/mymodule/endpoints/myfunction modules/mymodule/endpoints/myfunction
+  // ...
+  env GOOS=linux go build -ldflags="-s -w" -o bin/mymodule/endpoints/myfunction modules/mymodule/endpoints/myfunction
 
 ```
 
