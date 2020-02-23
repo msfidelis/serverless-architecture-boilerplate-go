@@ -15,6 +15,43 @@
 
 ### 🏠 [Homepage](https://github.com/msfidelis/serverless-architecture-boilerplate-go)
 
+## Structure
+
+```
+.
+├── Dockerfile
+├── Gopkg.lock
+├── Gopkg.toml
+├── Makefile
+├── README.md
+├── bin (output for go binaries)
+├── configs (configs folders for environment)
+│   └── dev.yml 
+├── go.mod
+├── go.sum
+├── modules (modules folder)
+│   └── books (module / context)
+│       ├── endpoints (api endpoints)
+│       │   ├── create.go
+│       │   ├── delete.go
+│       │   ├── detail.go
+│       │   ├── read.go
+│       │   └── update.go
+│       └── functions (workers / background functions)
+│           └── worker.go
+├── package-lock.json 
+├── pkg (shared components)
+│   ├── libs (libraries)
+│   │   ├── dynamoclient
+│   │   │   └── dynamoclient.go
+│   │   └── sqsclient
+│   │       └── sqsclient.go
+│   └── models (models)
+│       └── book
+│           └── book.go
+└── serverless.yml
+```
+
 ## Install
 
 ```sh
@@ -164,7 +201,8 @@ via: 1.1 32063733c6b1049f7b777e1f8ac028ad.cloudfront.net (CloudFront)
 x-amz-cf-pop: GRU50
 x-amz-cf-id: lNTlUeTq4RGRD1Us5cHgZ1spPqhzE91asXdSyci8k0IuISUuMOR_4w==
 
-{"hashkey":"12bfd98c-5675-11ea-94ea-5ec3dff6689d","status":"deleted"}
+{"hashkey":"12bfd98c-5675-11ea-94ea-5ec3dff6689d","status":"deleted"}ls
+
 ```
 
 # Creating a new function

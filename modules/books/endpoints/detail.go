@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"os"
 
-	"serverless-architecture-boilerplate-go/pkg/dynamoclient"
+	"serverless-architecture-boilerplate-go/pkg/libs/dynamoclient"
 	"serverless-architecture-boilerplate-go/pkg/models/book"
 
 	"github.com/aws/aws-lambda-go/events"

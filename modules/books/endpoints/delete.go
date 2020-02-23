@@ -5,7 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"os"
-	"serverless-architecture-boilerplate-go/pkg/dynamoclient"
+	"serverless-architecture-boilerplate-go/pkg/libs/dynamoclient"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"

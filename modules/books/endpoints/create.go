@@ -11,9 +11,9 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/google/uuid"
 
-	"serverless-architecture-boilerplate-go/pkg/dynamoclient"
+	"serverless-architecture-boilerplate-go/pkg/libs/dynamoclient"
+	"serverless-architecture-boilerplate-go/pkg/libs/sqsclient"
 	"serverless-architecture-boilerplate-go/pkg/models/book"
-	"serverless-architecture-boilerplate-go/pkg/sqsclient"
 )
 
 type Response events.APIGatewayProxyResponse

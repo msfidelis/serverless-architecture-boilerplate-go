@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"serverless-architecture-boilerplate-go/pkg/dynamoclient"
+	"serverless-architecture-boilerplate-go/pkg/libs/dynamoclient"
 	"serverless-architecture-boilerplate-go/pkg/models/book"
 	"time"
 
