@@ -33,6 +33,28 @@ make deploy
 make test
 ```
 
+## Creating new function
+
+### 1) create new function inside `modules` path
+
+```bash
+touch modules/mymodule/endpoints/myfunction.go
+```
+
+### 2) Add build instructions on Makefile
+
+```bash
+vim Makefile
+```
+
+```Makefile
+build:
+	dep ensure
+// ...
+env GOOS=linux go build -ldflags="-s -w" -o bin/mymodule/endpoints/myfunction modules/mymodule/endpoints/myfunction
+
+```
+
 ## Author
 
 👤 **Matheus Fidelis**

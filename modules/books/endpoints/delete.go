@@ -26,7 +26,6 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (Respon
 
 	hashkey := request.PathParameters["hashkey"]
 
-	// Using *dynamodb.AttributeValue to create keyMap
 	key := map[string]*dynamodb.AttributeValue{
 		"hashkey": {
 			S: aws.String(hashkey),
