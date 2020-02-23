@@ -52,7 +52,25 @@ build:
   dep ensure
   // ...
   env GOOS=linux go build -ldflags="-s -w" -o bin/mymodule/endpoints/myfunction modules/mymodule/endpoints/myfunction
+```
 
+### 3) Add function mapping on `serverless.yml` file
+
+```bash
+vim serverless.yml
+```
+
+```yml
+# ...
+functions:
+  create:
+    handler: bin/mymodule/endpoints/myfunction
+    events:
+      - http:
+          path: /services/mypath
+          method: get
+    tags:
+      TAGFUNCTION: Tag Value
 ```
 
 ## Author
