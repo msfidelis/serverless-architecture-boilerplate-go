@@ -70,6 +70,103 @@ d":true},{"hashkey":"708117bf-4f9c-11ea-b2af-6e3ae06015d9","title":"","author":"
 curl -X POST  https://5pas07ibi2.execute-api.us-east-1.amazonaws.com/dev/books -H 'Content-type:application/json' -d '{"title": "American Gods", "price": 10.50, "author": "Neil Gaiman"}'
 ```
 
+
+```json
+curl -i -X POST  https://5pas07i
+bi2.execute-api.us-east-1.amazonaws.com/dev/books -H 'Content-type:application/json' -d '{"title": "American Gods", 
+"price": 10.50, "author": "Neil Gaiman"}' 
+HTTP/2 201 
+content-type: application/json
+content-length: 265
+date: Sun, 23 Feb 2020 19:45:41 GMT
+x-amzn-requestid: 03f52228-3df8-413e-a22f-12877e41ebb3
+x-amz-apigw-id: IXZv2FOXIAMFgDw=
+x-amzn-trace-id: Root=1-5e52d665-f99746e82b4797d024a9d196;Sampled=0
+x-cache: Miss from cloudfront
+via: 1.1 aa3fc654df34a675869d8ecab4dd6bab.cloudfront.net (CloudFront)
+x-amz-cf-pop: GRU50
+x-amz-cf-id: NasPt3E-aQBmufDdZ3fVjCSaYYVHTnicDcyib1ZoAgqdkHCcwySxGA==
+
+{"hashkey":"12bfd98c-5675-11ea-94ea-5ec3dff6689d","title":"American Gods","author":"Neil Gaiman","price":10.5,"updat
+ed":"2020-02-23 19:45:41.394682371 +0000 UTC m=+329.476777607","created":"2020-02-23 19:45:41.39467731 +0000 UTC m=+
+329.476772546","processed":false}
+```
+
+### Detail a book
+
+```bash
+curl -i https://5pas07ibi2.execu
+te-api.us-east-1.amazonaws.com/dev/books/12bfd98c-5675-11ea-94ea-5ec3dff6689d
+```
+
+```json
+HTTP/2 200 
+content-type: application/json
+content-length: 265
+date: Sun, 23 Feb 2020 19:47:24 GMT
+x-amzn-requestid: 7de185ab-a088-4bcd-8da8-5b8e249adfb7
+x-amz-apigw-id: IXZ_0G4jIAMFfzA=
+x-amzn-trace-id: Root=1-5e52d6cb-096a4604266412f06b182418;Sampled=0
+x-cache: Miss from cloudfront
+via: 1.1 356de6a1dc9aa6df67447cdc3e65d45e.cloudfront.net (CloudFront)
+x-amz-cf-pop: GRU1-C1
+x-amz-cf-id: cH8MwkQU9WLfuEkpNZCXYYS8QQGU0uQ5CsdmIfTEVn8lVrR9wMtoRg==
+
+{"hashkey":"12bfd98c-5675-11ea-94ea-5ec3dff6689d","title":"American Gods","author":"Neil Gaiman","price":10.5,"updat
+ed":"2020-02-23 19:45:41.526980165 +0000 UTC m=+328.914267950","created":"2020-02-23 19:45:41.39467731 +0000 UTC m=+
+329.476772546","processed":false}%
+```
+
+
+### Updating a book 
+
+```bash
+curl -i -X PUT  https://5pas07
+ibi2.execute-api.us-east-1.amazonaws.com/dev/books/12bfd98c-5675-11ea-94ea-5ec3dff6689d -H 'Content-type:application
+/json' -d '{"title": "American Gods - Updated", "price": 20.00, "author": "Neil Gaiman"}'
+```
+
+```json
+HTTP/2 200 
+content-type: application/json
+content-length: 179
+date: Sun, 23 Feb 2020 19:50:51 GMT
+x-amzn-requestid: 6720a008-07b5-4f0c-81de-3ee3bc2ed93b
+x-amz-apigw-id: IXagXGkmoAMFwvA=
+x-amzn-trace-id: Root=1-5e52d79b-b689cd30ffe1e9dc5ef25256;Sampled=0
+x-cache: Miss from cloudfront
+via: 1.1 a43a4e3a015929f71d6fc6fa15418703.cloudfront.net (CloudFront)
+x-amz-cf-pop: GRU1-C1
+x-amz-cf-id: 2W2jS7yoAbPsICQ7C3EMMKQl827HdbFPkb_WdsztzUwmstH7U4nIMw==
+
+{"hashkey":"","title":"American Gods - Updated","author":"Neil Gaiman","price":20,"updated":"2020-02-23 19:50:51.896
+7559 +0000 UTC m=+48.464494766","created":"","processed":false}
+```
+
+
+### Deleting a book
+
+```bash
+curl -i -X DELETE https://5pas
+07ibi2.execute-api.us-east-1.amazonaws.com/dev/books/12bfd98c-5675-11ea-94ea-5ec3dff6689d
+```
+
+```json
+HTTP/2 200 
+content-type: application/json
+content-length: 69
+date: Sun, 23 Feb 2020 19:52:48 GMT
+x-amzn-requestid: 19d8bf9a-9a9f-41f9-9558-481baae891d9
+x-amz-apigw-id: IXaybEqAoAMFuAg=
+x-amzn-trace-id: Root=1-5e52d80f-40cde16afd20a6ce870e7b0e;Sampled=0
+x-cache: Miss from cloudfront
+via: 1.1 32063733c6b1049f7b777e1f8ac028ad.cloudfront.net (CloudFront)
+x-amz-cf-pop: GRU50
+x-amz-cf-id: lNTlUeTq4RGRD1Us5cHgZ1spPqhzE91asXdSyci8k0IuISUuMOR_4w==
+
+{"hashkey":"12bfd98c-5675-11ea-94ea-5ec3dff6689d","status":"deleted"}
+```
+
 # Creating a new function
 
 ### 1) create new function inside `modules` path
