@@ -7,7 +7,7 @@ provider:
   runtime: go1.x
   stage: ${opt:stage, 'dev'}
   timeout: 10
-  memorySize: 512
+  memorySize: 256
   versionFunctions: false
 
   tags:
