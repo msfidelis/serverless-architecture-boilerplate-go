@@ -130,4 +130,4 @@ resources:
       Properties:
         QueueName: ${self:custom.sqs-books-name}
         MessageRetentionPeriod: 1209600
-        VisibilityTimeout: 60
+        VisibilityTimeout: 120
