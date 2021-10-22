@@ -15,10 +15,6 @@ func PHONY() {
 	mg.Deps(Clean, Build, Deploy)
 }
 
-func def() {
-	mg.Deps(Clean, Build, Deploy)
-}
-
 // clean remove all bin
 func Clean() error {
 	return sh.Rm("bin")
