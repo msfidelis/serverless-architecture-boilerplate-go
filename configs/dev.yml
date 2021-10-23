@@ -1,4 +1,4 @@
 ENV: dev
-REGION: ${self:custom.region}
+REGION: 'us-east-1'
 DYNAMO_TABLE_BOOKS: ${self:custom.dynamo-books-name}
 SQS_QUEUE_BOOKS: ${self:custom.sqs-books-name}
