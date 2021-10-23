@@ -38,15 +38,6 @@ provider:
       - sqs:SendMessage
     Resource: arn:aws:sqs:*:*:*
 
-  # package:
-  #   exclude:
-  #     - ./**
-  #     - .git/**
-  #     - .vscode/**
-  #     - .test/**
-  #   include:
-  #     - ./bin/**
-
   environment:
     ${file(./configs/${self:provider.stage}.yml)}
 
