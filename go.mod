@@ -7,4 +7,5 @@ require (
 	github.com/aws/aws-sdk-go v1.27.2
 	github.com/google/uuid v1.1.1
 	github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af
+	github.com/magefile/mage v1.11.0 // indirect
 )

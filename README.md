@@ -22,7 +22,6 @@
 ├── Dockerfile
 ├── Gopkg.lock
 ├── Gopkg.toml
-├── Makefile
 ├── README.md
 ├── bin (output for go binaries)
 ├── configs (configs folders for environment)
@@ -49,13 +48,15 @@
 │   └── models (models)
 │       └── book
 │           └── book.go
+├── magefile.go
+├── mage.go
 └── serverless.yml
 ```
 
 ## Install
 
 ```sh
-make build
+go run mage.go build
 ```
 
 ## Usage
