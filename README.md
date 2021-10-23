@@ -62,13 +62,13 @@ go run mage.go build
 ## Usage
 
 ```sh
-make deploy
+go run mage.go deploy
 ```
 
 ## Run tests
 
 ```sh
-make test
+go run mage.go test
 ```
 
 # Testing boilerplate
