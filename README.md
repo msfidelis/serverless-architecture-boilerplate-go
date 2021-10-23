@@ -246,6 +246,12 @@ functions:
       TAGFUNCTION: Tag Value
 ```
 
+### 4) Delete stack 
+
+```bash
+go run mage.go remove 
+```
+
 ## Author
 
 👤 **Matheus Fidelis**
