@@ -1,6 +1,6 @@
 service: serverless-go
 
-frameworkVersion: '>=1.28.0 <2.0.0'
+# frameworkVersion: '>=1.28.0 <2.0.0'
 
 provider:
   name: aws
@@ -38,20 +38,19 @@ provider:
       - sqs:SendMessage
     Resource: arn:aws:sqs:*:*:*
 
-  package:
-    exclude:
-      - ./**
-      - .git/**
-      - .vscode/**
-      - .test/**
-    include:
-      - ./bin/**
+  # package:
+  #   exclude:
+  #     - ./**
+  #     - .git/**
+  #     - .vscode/**
+  #     - .test/**
+  #   include:
+  #     - ./bin/**
 
   environment:
     ${file(./configs/${self:provider.stage}.yml)}
 
 custom:
-  region: ${self:provider.region}
   stage:  ${opt:stage, self:provider.stage}
   prefix: ${self:custom.stage}-${self:service}
   dynamo-books-name: ${self:custom.prefix}-books-catalog

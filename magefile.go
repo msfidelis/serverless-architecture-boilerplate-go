@@ -1,3 +1,4 @@
+//go:build mage
 // +build mage
 
 package main
@@ -12,7 +13,7 @@ import (
 var Default = PHONY
 
 func PHONY() {
-	mg.Deps(Clean, Build, Deploy)
+	mg.Deps(Clean, Build, Deploy, Remove)
 }
 
 // clean remove all bin
@@ -57,4 +58,9 @@ func Test() error {
 func Deploy() error {
 	mg.Deps(Clean, Build)
 	return sh.Run("serverless", "deploy", "--verbose", "--force")
+}
+
+func Remove() error {
+	mg.Deps(Clean)
+	return sh.Run("serverless", "remove")
 }
